@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  /* Defining the RELIC Palette */
+  --color-relic-dark: #1a1a1a;
+  --color-relic-charcoal: #2d2d2d;
+  
+  /* Gold Accents */
+  --color-relic-gold: #c5a059;
+  --color-relic-gold-dim: #8a703f;
+
+  /* Text Colors */
+  --color-relic-bone: #e5e5e5;
+  --color-relic-paper: #d4c5a9;
+  
+  /* Status Colors */
+  --color-relic-red: #8a2be2;
+  --color-relic-green: #2e8b57;
+
+  /* Link Fonts to Variables */
+  --font-serif: var(--font-cinzel), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Global Game World Styles */
+body {
+  background-color: var(--color-relic-dark);
+  color: var(--color-relic-paper);
+  font-family: var(--font-sans);
+}
+
+/* Custom Scrollbar (Ancient Mechanism Look) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-relic-dark); 
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-relic-charcoal); 
+  border: 1px solid var(--color-relic-gold-dim);
+}
