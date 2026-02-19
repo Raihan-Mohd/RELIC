@@ -1,19 +1,13 @@
 import { Inter, Cinzel } from "next/font/google";
 import "./globals.css";
-
-//importing of components
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+// Importing of the Global Cart Wrapper from CartContext.js
+import { CartProvider } from "@/app/context/CartContext";
 
-const cinzel = Cinzel({
-  variable: "--font-cinzel",
-  subsets: ["latin"],
-});
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+const cinzel = Cinzel({ variable: "--font-cinzel", subsets: ["latin"] });
 
 export const metadata = {
   title: "RELIC | IRL Inventory",
@@ -25,16 +19,14 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${inter.variable} ${cinzel.variable} antialiased bg-relic-dark text-relic-paper`}>
         
-        {/* navbar*/}
-        <Navbar />
-
-        {/* This is the main content (page.js) */}
-        <main className="min-h-screen pt-20"> 
-          {children}
-        </main>
-
-        {/* footer*/}
-        <Footer />
+        {/* Wrapping of the application so all components can access the cart data (cartContext.js) */}
+        <CartProvider>
+          <Navbar />
+          <main className="min-h-screen pt-20"> 
+            {children}
+          </main>
+          <Footer />
+        </CartProvider>
         
       </body>
     </html>

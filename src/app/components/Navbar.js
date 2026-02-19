@@ -1,6 +1,12 @@
+"use client";
 import Link from "next/link";
 
+import { useCart } from "@/app/context/CartContext";
+
 export default function Navbar() {
+
+   //pulls addToCart function from useCart in CartContext.js
+  const { cart } = useCart();
   return (
     <nav className="fixed top-0 left-0 w-full z-50 border-b border-relic-gold bg-relic-dark/95 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -28,7 +34,7 @@ export default function Navbar() {
           <Link href="/cart" className="text-relic-paper hover:text-relic-gold transition-colors flex items-center gap-2">
             <span className="text-xs font-bold">CART</span>
             <span className="bg-relic-gold text-relic-dark px-1.5 py-0.5 text-xs font-bold rounded-sm">
-              0
+              {cart.length}
             </span>
           </Link>
           
