@@ -5,6 +5,8 @@ import Footer from "@/app/components/Footer";
 
 // Importing of the Global Cart Wrapper from CartContext.js
 import { CartProvider } from "@/app/context/CartContext";
+//importing of auth provider
+import { AuthProvider } from "@/app/context/authContext";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const cinzel = Cinzel({ variable: "--font-cinzel", subsets: ["latin"] });
@@ -21,11 +23,13 @@ export default function RootLayout({ children }) {
         
         {/* Wrapping of the application so all components can access the cart data (cartContext.js) */}
         <CartProvider>
-          <Navbar />
-          <main className="min-h-screen pt-20"> 
-            {children}
-          </main>
-          <Footer />
+          <AuthProvider>
+            <Navbar />
+            <main className="min-h-screen pt-20"> 
+              {children}
+            </main>
+            <Footer />
+          </AuthProvider>
         </CartProvider>
         
       </body>

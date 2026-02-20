@@ -3,10 +3,14 @@ import Link from "next/link";
 
 import { useCart } from "@/app/context/CartContext";
 
+import { useAuth } from "@/app/context/authContext";
+
 export default function Navbar() {
 
    //pulls addToCart function from useCart in CartContext.js
   const { cart } = useCart();
+  // Grab the user data and the logout function
+  const { user, logout } = useAuth();
   return (
     <nav className="fixed top-0 left-0 w-full z-50 border-b border-relic-gold bg-relic-dark/95 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -27,6 +31,14 @@ export default function Navbar() {
           <Link href="/about" className="hover:text-relic-gold transition-colors">
             ABOUT
           </Link>
+
+          {/* Admin Link (Only visible if the logged-in user is an admin) */}
+          {user && (user.email === "ammarcanani@gmail.com" || user.email === "elsje.scott@uct.ac.za") && (
+            <Link href="/admin" className="text-relic-red hover:text-relic-bone transition-colors font-bold">
+              ADMIN
+            </Link>
+          )}
+
         </div>
 
         {/* right (Cart & Account) */}
@@ -37,10 +49,21 @@ export default function Navbar() {
               {cart.length}
             </span>
           </Link>
+
+          {/* Login vs Logout (conditional) */}
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-xs text-relic-paper opacity-50 hidden sm:block">{user.email}</span>
+              <button onClick={logout} className="text-sm text-relic-charcoal border border-relic-charcoal px-4 py-1 hover:bg-relic-paper hover:text-relic-dark transition-all">
+                LOGOUT
+              </button>
+            </div>
+          ) : (
           
-          <Link href="/login" className="text-sm text-relic-gold border border-relic-gold px-4 py-1 hover:bg-relic-gold hover:text-relic-dark transition-all">
-            LOGIN
-          </Link>
+            <Link href="/login" className="text-sm text-relic-gold border border-relic-gold px-4 py-1 hover:bg-relic-gold hover:text-relic-dark transition-all">
+              LOGIN
+            </Link>
+          )}
         </div>
 
       </div>

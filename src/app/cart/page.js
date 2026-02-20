@@ -8,8 +8,25 @@ export default function CartPage() {
     //Grab the cart array from the context
     const { cart } = useCart();
 
+    // Grab the current user identity
+    const { user } = useAuth();
+    const router = useRouter();
+
     // Calculate the total price (loops through the cart and adds item.price to a running/continuous sum of them)
     const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+      // The Gatekeeper Function
+    const handleCheckout = () => {
+      if (!user) {
+        // If the user is null (Guest), redirect them to the login page
+        alert("Authentication required. Redirecting to the Guild Registry...");
+        router.push("/login");
+      } else {
+        // If they are logged in (Customer), run the simulation required by the brief
+        alert(`Simulation Complete! Order confirmed for ${user.email}. Total: R${total}`);
+        // In a real app, we would clear the cart and save the order to the database here.
+      }
+    };
 
 return (
     <div className="max-w-4xl mx-auto px-6 py-12">
@@ -29,7 +46,7 @@ return (
           </Link>
         </div>
       ) : (
-        /* ...Else, if there are items, show the list! */
+        /* ...Else, if there are items, show the list */
         <div className="space-y-6">
           
           {/*Uses .map() to generate a row for every item */}
@@ -64,12 +81,15 @@ return (
               <span className="font-bold text-relic-gold">R {total}</span>
             </div>
             
-            <button className="bg-relic-gold text-relic-dark px-8 py-3 font-bold tracking-widest hover:bg-relic-bone transition-colors w-full md:w-auto">
+            <button onClick={handleCheckout} className="bg-relic-gold text-relic-dark px-8 py-3 font-bold tracking-widest hover:bg-relic-bone transition-colors w-full md:w-auto">
               PROCEED TO CHECKOUT
             </button>
-            <p className="text-xs text-relic-paper opacity-50 mt-3 text-right">
-              * Authentication required to complete transaction.
-            </p>
+            {/* Dynamic helper text based on login status */}
+            {!user && (
+              <p className="text-xs text-relic-red opacity-80 mt-3 text-right">
+                * Authentication required to complete trade.
+              </p>
+            )}
           </div>
           
         </div>
