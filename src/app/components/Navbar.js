@@ -1,66 +1,50 @@
 "use client";
+
 import Link from "next/link";
-
 import { useCart } from "@/app/context/CartContext";
-
 import { useAuth } from "@/app/context/authContext";
 
 export default function Navbar() {
-
-   //pulls addToCart function from useCart in CartContext.js
   const { cart } = useCart();
-  // Grab the user data and the logout function
   const { user, logout } = useAuth();
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 border-b border-relic-gold bg-relic-dark/95 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         
-        {/* Left (Relic Brand Name) */}
-        <Link href="/" className="font-serif text-2xl text-relic-gold tracking-widest hover:text-relic-bone transition-colors">
+        <Link href="/" className="font-serif text-2xl text-slate-900 tracking-widest hover:text-slate-600 transition-colors font-bold">
           RELIC
         </Link>
 
-        {/* center (Standard Navigation )*/}
-        <div className="hidden md:flex space-x-8 text-relic-paper font-sans text-sm tracking-wide">
-          <Link href="/" className="hover:text-relic-gold transition-colors">
-            HOME
-          </Link>
-          <Link href="/shop" className="hover:text-relic-gold transition-colors">
-            SHOP
-          </Link>
-          <Link href="/about" className="hover:text-relic-gold transition-colors">
-            ABOUT
-          </Link>
-
-          {/* Admin Link (Only visible if the logged-in user is an admin) */}
-          {user && (user.email === "ammarcanani@gmail.com" || user.email === "elsje.scott@uct.ac.za") && (
-            <Link href="/admin" className="text-relic-red hover:text-relic-bone transition-colors font-bold">
+        <div className="hidden md:flex space-x-8 text-slate-600 font-sans text-sm tracking-wide font-medium">
+          <Link href="/" className="hover:text-black transition-colors">HOME</Link>
+          <Link href="/shop" className="hover:text-black transition-colors">CATALOG</Link>
+          <Link href="/about" className="hover:text-black transition-colors">ABOUT</Link>
+          
+          {user && (user.email === "ammarcanani@gmail.com" || user.email === "elsje.scott@uct.ac.za" || user.email === "test@relic.com") && (
+            <Link href="/admin" className="text-blue-600 hover:text-blue-800 transition-colors font-bold">
               ADMIN
             </Link>
           )}
-
         </div>
 
-        {/* right (Cart & Account) */}
         <div className="flex items-center space-x-6">
-          <Link href="/cart" className="text-relic-paper hover:text-relic-gold transition-colors flex items-center gap-2">
-            <span className="text-xs font-bold">CART</span>
-            <span className="bg-relic-gold text-relic-dark px-1.5 py-0.5 text-xs font-bold rounded-sm">
+          <Link href="/cart" className="text-slate-600 hover:text-black transition-colors flex items-center gap-2">
+            <span className="text-xs font-bold tracking-wider">CART</span>
+            <span className="bg-slate-900 text-white px-2 py-0.5 text-xs font-bold rounded-full">
               {cart.length}
             </span>
           </Link>
-
-          {/* Login vs Logout (conditional) */}
+          
           {user ? (
             <div className="flex items-center gap-4">
-              <span className="text-xs text-relic-paper opacity-50 hidden sm:block">{user.email}</span>
-              <button onClick={logout} className="text-sm text-relic-charcoal border border-relic-charcoal px-4 py-1 hover:bg-relic-paper hover:text-relic-dark transition-all">
+              <span className="text-xs text-slate-500 hidden sm:block font-medium">{user.email}</span>
+              <button onClick={logout} className="text-sm font-medium text-slate-600 border border-slate-300 rounded-full px-5 py-1.5 hover:bg-slate-100 transition-all">
                 LOGOUT
               </button>
             </div>
           ) : (
-          
-            <Link href="/login" className="text-sm text-relic-gold border border-relic-gold px-4 py-1 hover:bg-relic-gold hover:text-relic-dark transition-all">
+            <Link href="/login" className="text-sm font-medium text-white bg-slate-900 rounded-full px-6 py-1.5 hover:bg-slate-800 transition-all">
               LOGIN
             </Link>
           )}

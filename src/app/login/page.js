@@ -1,121 +1,100 @@
-"use client"; // Required for forms and state
+"use client";
 
 import { useState } from "react";
 import { useAuth } from "@/app/context/authContext";
-import { useRouter } from "next/navigation"; // Next.js tool for changing pages
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
-  // State for our form inputs
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  
-  // A toggle to switch between Login mode and Signup mode
   const [isLoginMode, setIsLoginMode] = useState(true);
 
-  // Bring in the tools from our Auth Brain/backpack
   const { login, signup } = useAuth();
-  const router = useRouter(); // using this to redirect the user after success
+  const router = useRouter();
 
-  // Async function to handle the internet request
   const handleSubmit = async (e) => {
-    //  Stop the browser from refreshing the page
     e.preventDefault();
-    setError(""); // Clear any old errors
-
+    setError("");
     try {
       if (isLoginMode) {
         await login(email, password);
       } else {
         await signup(email, password);
       }
-      // If we get here without an error, it worked. Send them to the Home page.
       router.push("/"); 
-      
     } catch (err) {
-      // If Firebase says Wrong password or Email in use, catch it and show it
       console.error("Auth Error:", err);
       setError("Authentication failed. Please check your credentials.");
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-relic-dark">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-50">
       
-      {/* The Login Card */}
-      <div className="w-full max-w-md border border-relic-charcoal bg-black/50 p-8 shadow-2xl">
-        
-        <h1 className="font-serif text-3xl text-relic-gold tracking-widest text-center mb-2">
-          {isLoginMode ? "AUTHENTICATE" : "JOIN THE GUILD"}
+      <div className="w-full max-w-md bg-white rounded-3xl border border-gray-100 p-10 shadow-xl">
+        <h1 className="font-serif text-3xl text-slate-900 tracking-wide text-center font-bold mb-2">
+          {isLoginMode ? "WELCOME BACK" : "CREATE ACCOUNT"}
         </h1>
-        <p className="text-relic-paper opacity-60 text-center text-sm mb-8 font-serif italic">
-          {isLoginMode ? "Enter your credentials to access your inventory." : "Register your spirit to begin trading."}
+        <p className="text-slate-500 text-center text-sm mb-10 font-medium">
+          {isLoginMode ? "Enter your details to access your dashboard." : "Register to start collecting digital assets."}
         </p>
 
-        {/* The Form Element */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          
-          {/* Email Input */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <label className="text-xs text-relic-paper uppercase tracking-widest">Scribe (Email)</label>
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Email Address</label>
             <input 
               type="email" 
               required
               value={email}
-              // Update state every time a key is pressed
               onChange={(e) => setEmail(e.target.value)} 
-              className="bg-transparent border border-relic-charcoal text-relic-bone p-3 focus:outline-none focus:border-relic-gold transition-colors"
-              placeholder="wanderer@landsbetween.com"
+              className="bg-slate-50 border border-gray-200 text-slate-900 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              placeholder="name@example.com"
             />
           </div>
 
-          {/* Password Input */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs text-relic-paper uppercase tracking-widest">Cipher (Password)</label>
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Password</label>
             <input 
               type="password" 
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)} 
-              className="bg-transparent border border-relic-charcoal text-relic-bone p-3 focus:outline-none focus:border-relic-gold transition-colors"
+              className="bg-slate-50 border border-gray-200 text-slate-900 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               placeholder="Minimum 6 characters"
             />
           </div>
 
-          {/* Error Message Display */}
           {error && (
-            <div className="text-relic-red text-xs border border-relic-red/50 bg-relic-red/10 p-3 text-center">
+            <div className="text-red-600 text-sm font-medium bg-red-50 border border-red-100 p-4 rounded-xl text-center">
               {error}
             </div>
           )}
 
-          {/* Submit Button */}
           <button 
             type="submit"
-            className="mt-4 border border-relic-gold bg-relic-gold/10 text-relic-gold px-8 py-3 hover:bg-relic-gold hover:text-relic-dark transition-all uppercase tracking-widest font-bold"
+            className="mt-6 bg-slate-900 text-white rounded-full py-4 hover:bg-blue-600 transition-all font-bold tracking-widest uppercase shadow-md"
           >
-            {isLoginMode ? "Enter Vault" : "Forge Account"}
+            {isLoginMode ? "Sign In" : "Register"}
           </button>
         </form>
 
-        {/* Toggle Mode Button */}
-        <div className="mt-8 text-center border-t border-relic-charcoal pt-6">
-          <p className="text-sm text-relic-paper opacity-70">
-            {isLoginMode ? "A new wanderer?" : "Already possess a cipher?"}
+        <div className="mt-8 text-center pt-6">
+          <p className="text-sm font-medium text-slate-500">
+            {isLoginMode ? "Don't have an account?" : "Already have an account?"}
           </p>
           <button 
             onClick={() => setIsLoginMode(!isLoginMode)}
-            className="text-sm text-relic-gold hover:text-relic-bone transition-colors mt-2 underline underline-offset-4"
+            className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors mt-2"
           >
-            {isLoginMode ? "Register here" : "Authenticate here"}
+            {isLoginMode ? "Create one now" : "Sign in instead"}
           </button>
         </div>
-
       </div>
       
-      <Link href="/" className="mt-8 text-xs text-relic-charcoal hover:text-relic-paper transition-colors uppercase tracking-widest">
-        &larr; Return to Wilderness
+      <Link href="/" className="mt-8 text-sm font-bold text-slate-400 hover:text-slate-900 transition-colors uppercase tracking-widest">
+        &larr; Back to Store
       </Link>
     </div>
   );

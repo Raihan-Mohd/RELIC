@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Listen for changes. Firebase magically checks if you are already logged in!
+  // Listen for changes. Firebase checks if im already logged in
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser); // If logged in, this sets the user data. If logged out, it sets it to null.

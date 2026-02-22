@@ -1,70 +1,68 @@
-"use client"; //button click is a browser event
-import Image from "next/image";
-import { getRarityColor } from "@/app/lib/rarity";
+"use client";
 
-//importing of useCart 
+import Image from "next/image";
 import { useCart } from "@/app/context/CartContext";
 
 export default function ProductCard({ product }) {
-  // 1. Get the color based on the item's rarity
-  const rarityColor = getRarityColor(product.stats.rarity);
-
-  //pulls addToCart function from useCart in CartContext.js
+  // grabbing the addToCart function
   const { addToCart } = useCart();
 
-  // The function that runs when clicked (add to cart)
-  const handleAddtoCart = () => {
-    addToCart(product); // Sends this specific item to the global array
+  // This is the action that happens when the button is clicked
+  const handleAddToCartClick = () => {
+    //  Send the product data through to the global Cart
+    addToCart(product);
+    // Gives the user a standard, simple notification
+    alert(`Added to cart: ${product.name}`);
   };
 
   return (
-    //The outside card itself
-    <div className={`group relative bg-relic-dark border ${rarityColor} border-opacity-50 hover:border-opacity-100 transition-all duration-300 flex flex-col h-full`}>
+    <div className="group relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden">
       
-      {/* Image slot (image always stays Square) - the image section */}
-      <div className="relative aspect-square w-full overflow-hidden bg-black/50 border-b border-relic-charcoal">
-        {/* The Badge (Rarity) */}
-        <span className={`absolute top-2 right-2 px-2 py-0.5 text-[10px] uppercase font-bold border bg-black/80 z-10 ${rarityColor}`}>
+      {/* Product Image Section */}
+      <div className="relative aspect-square w-full overflow-hidden bg-gray-50 border-b border-gray-100">
+        <span className="absolute top-3 right-3 px-3 py-1 text-[10px] uppercase font-bold tracking-wider bg-white/90 text-slate-800 rounded-full shadow-sm z-10 backdrop-blur-sm">
           {product.stats.rarity}
         </span>
-
-        {/* The Image */}
         <Image 
           src={product.image} 
           alt={product.name}
           fill
-          unoptimized
-          className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
         />
       </div>
 
-      {/* Item details */}
-      <div className="p-4 flex flex-col flex-grow">
-        {/* Name */}
-        <h3 className="font-serif text-lg text-relic-bone tracking-wide group-hover:text-relic-gold transition-colors">
+      {/* Product Details Section */}
+      <div className="p-5 flex flex-col flex-grow">
+        <h3 className="font-serif text-lg text-slate-900 font-bold mb-1 group-hover:text-blue-600 transition-colors">
           {product.name}
         </h3>
         
-        {/* Source Game (Subtitle) */}
-        <p className="text-xs text-relic-paper opacity-60 mb-3 italic">
-          from {product.stats.source}
+        {/* Video Game */}
+        <p className="text-xs text-slate-500 mb-3 font-medium tracking-wide uppercase">
+          Video Game: {product.stats.source}
+        </p>
+        
+        {/* Description */}
+        <p className="text-sm text-slate-600 mb-6 line-clamp-2 flex-grow leading-relaxed">
+          {product.lore} 
         </p>
 
-        {/* Description (Lore) - Truncated */}
-        <p className="text-xs text-relic-paper opacity-80 mb-4 line-clamp-2 flex-grow font-serif">
-          "{product.lore}"
-        </p>
-
-        {/* Footer: Price & Add Button. mt auto pushes footer to bottom. */}
-        <div className="flex justify-between items-center mt-auto border-t border-relic-charcoal pt-3">
-          <span className="text-relic-gold font-bold">
-            R {product.price}
+        {/* Price and Button Section */}
+        <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100">
+          <span className="text-slate-900 font-bold text-lg">
+            ${product.price}
           </span>
-          <button onClick={handleAddtoCart} className="text-xs uppercase tracking-widest hover:text-relic-bone transition-colors">
-            [ Add to Cart ]
+          
+          {/*  onClick event attached to this button */}
+          <button 
+            onClick={handleAddToCartClick}
+            className="text-xs font-bold text-white bg-slate-900 px-4 py-2 rounded-full hover:bg-blue-600 transition-colors uppercase tracking-wider"
+          >
+            Add to Cart
           </button>
         </div>
       </div>
+      
     </div>
   );
 }

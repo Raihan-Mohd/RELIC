@@ -3,25 +3,24 @@ import "./globals.css";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 
-// Importing of the Global Cart Wrapper from CartContext.js
 import { CartProvider } from "@/app/context/CartContext";
-//importing of auth provider
 import { AuthProvider } from "@/app/context/authContext";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+
 const cinzel = Cinzel({ variable: "--font-cinzel", subsets: ["latin"] });
 
 export const metadata = {
-  title: "RELIC | IRL Inventory",
-  description: "Curated artifacts for the discerning wanderer.",
+  title: "RELIC | Modern Digital Assets",
+  description: "Premium items for every universe.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${cinzel.variable} antialiased bg-relic-dark text-relic-paper`}>
+      {/* Changed the background to white/slate and removed the dark mode colors */}
+      <body className={`${inter.variable} ${cinzel.variable} antialiased bg-slate-50 text-slate-900`}>
         
-        {/* Wrapping of the application so all components can access the cart data (cartContext.js) */}
         <CartProvider>
           <AuthProvider>
             <Navbar />
