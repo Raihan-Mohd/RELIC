@@ -1,10 +1,10 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/app/context/authContext";
 
 // database tools needed to talk to the cloud
-import { db } from "@/lib/firebase";
+import { db } from "@/app/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const CartContext = createContext();
