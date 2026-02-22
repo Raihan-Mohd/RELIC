@@ -70,32 +70,61 @@ export default function AdminDashboard() {
   const handleAddProduct = async (e) => {
     e.preventDefault(); // Stop the page from refreshing
     
-    // Create a unique ID based on the current time
-    const newId = `product-${Date.now()}`;
-    
-    // Package the form data into a neat object
-    const productToSave = {
-      id: newId,
-      name: newProduct.name,
-      price: Number(newProduct.price), // Convert text to a real number
-      lore: newProduct.description, // Keeping lore so it matches existing database
-      image: "https://via.placeholder.com/400", 
-      stats: {
-        source: newProduct.videoGame, // Keeping source for the database
-        rarity: newProduct.rarity
-      }
-    };
-
     try {
+      //  Gets all the current items to check their IDs
+      const querySnapshot = await getDocs(collection(db, "products"));
+      
+      let highestNumber = 0; // Start counting at 0
+
+      // Loop through every single item in the database
+      querySnapshot.forEach((doc) => {
+        const id = doc.id; // eg. rel-014
+        
+        // Only look at IDs that start with rel-
+        if (id.startsWith("rel-")) {
+          // Cut off the rel- part to just get the number string (e.g., "014")
+          const numberString = id.substring(4); 
+          
+          // Convert the string into real math numbers (e.g., 14)
+          const currentNumber = parseInt(numberString, 10); 
+          
+          // IF this number is bigger than our current highest, update it
+          if (!isNaN(currentNumber) && currentNumber > highestNumber) {
+            highestNumber = currentNumber;
+          }
+        }
+      });
+
+      // Does the math (Add 1 to the highest number found)
+      const nextNumber = highestNumber + 1;
+      
+      // Formats it nicely: .padStart(3, '0') turns "29" into "029"
+      const newId = `rel-${nextNumber.toString().padStart(3, '0')}`;
+
+      //Saving to Firebase
+      // Package the form data into a neat object
+      const productToSave = {
+        id: newId, // Using our newly generated smart ID!
+        name: newProduct.name,
+        price: Number(newProduct.price), 
+        lore: newProduct.description, 
+        image: "https://via.placeholder.com/400", 
+        stats: {
+          source: newProduct.videoGame, 
+          rarity: newProduct.rarity
+        }
+      };
+
       // Pause and send this new object to the Firebase database
       await setDoc(doc(db, "products", newId), productToSave);
-      alert("Product successfully added to the database!");
+      alert(`Success! Saved to database as ${newId}`);
       
       // Clear out the text boxes so they are empty for the next item
       setNewProduct({ name: "", price: "", videoGame: "", rarity: "Common", description: "" });
       
       // Fetch the updated list from the database to show the new item
       fetchProducts(); 
+      
     } catch (error) {
       console.error("Error adding product:", error);
       alert("Failed to add product.");
