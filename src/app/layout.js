@@ -20,16 +20,15 @@ export default function RootLayout({ children }) {
     <html lang="en">
       {/* Changed the background to white/slate and removed the dark mode colors */}
       <body className={`${inter.variable} ${cinzel.variable} antialiased bg-slate-50 text-slate-900`}>
-        
+        <AuthProvider>
         <CartProvider>
-          <AuthProvider>
             <Navbar />
             <main className="min-h-screen pt-20"> 
               {children}
             </main>
             <Footer />
-          </AuthProvider>
         </CartProvider>
+        </AuthProvider>
         
       </body>
     </html>

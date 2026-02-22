@@ -26,8 +26,10 @@ export default function AdminDashboard() {
     description: ""
   });
 
-  // The allowed VIP list (the current admins)
-  const adminEmails = ["ammarcanani@gmail.com", "elsje.scott@uct.ac.za", "test@relic.com"]; 
+  // Pull the secure string from the env and split it into an array
+  const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS 
+    ? process.env.NEXT_PUBLIC_ADMIN_EMAILS.split(",") 
+    : [];
 
   //Security
   // If the page is done loading, we check IF the user is allowed here.

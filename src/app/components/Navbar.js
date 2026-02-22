@@ -21,7 +21,8 @@ export default function Navbar() {
           <Link href="/shop" className="hover:text-black transition-colors">CATALOG</Link>
           <Link href="/about" className="hover:text-black transition-colors">ABOUT</Link>
           
-          {user && (user.email === "ammarcanani@gmail.com" || user.email === "elsje.scott@uct.ac.za" || user.email === "test@relic.com") && (
+          {/* Pull the admin list from the vault and check if the user is on it */}
+          {user && process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(",").includes(user.email) && (
             <Link href="/admin" className="text-blue-600 hover:text-blue-800 transition-colors font-bold">
               ADMIN
             </Link>
