@@ -1,18 +1,36 @@
 "use client";
 
 import Image from "next/image";
-import { useCart } from "@/app/context/CartContext";
+import { useCart } from "@/context/CartContext";
+
+// Importing of database tools to track popularity
+import { db } from "@/lib/firebase";
+import { doc, updateDoc, increment } from "firebase/firestore";
 
 export default function ProductCard({ product }) {
-  // grabbing the addToCart function
+  //  Grab the cart  function
   const { addToCart } = useCart();
 
-  // This is the action that happens when the button is clicked
-  const handleAddToCartClick = () => {
-    //  Send the product data through to the global Cart
+  // added async here so it can talk to the database when clicked
+  const handleAddToCartClick = async () => {
+    
+    // Instantly update the user's screen so they don't have to wait for the database
     addToCart(product);
-    // Gives the user a standard, simple notification
     alert(`Added to cart: ${product.name}`);
+
+    // Send a silent, background ping to Firebase to increase this item's popularity!
+    try {
+      // Find this specific product in the database
+      const productRef = doc(db, "products", product.id);
+      
+      // Tell Firebase: Update the cartAdds stat by adding exactly 1 to it
+      await updateDoc(productRef, {
+        "stats.cartAdds": increment(1)
+      });
+      
+    } catch (error) {
+      console.error("Failed to track popularity:", error);
+    }
   };
 
   return (
@@ -37,12 +55,10 @@ export default function ProductCard({ product }) {
           {product.name}
         </h3>
         
-        {/* Video Game */}
         <p className="text-xs text-slate-500 mb-3 font-medium tracking-wide uppercase">
           Video Game: {product.stats.source}
         </p>
         
-        {/* Description */}
         <p className="text-sm text-slate-600 mb-6 line-clamp-2 flex-grow leading-relaxed">
           {product.lore} 
         </p>
@@ -53,7 +69,6 @@ export default function ProductCard({ product }) {
             ${product.price}
           </span>
           
-          {/*  onClick event attached to this button */}
           <button 
             onClick={handleAddToCartClick}
             className="text-xs font-bold text-white bg-slate-900 px-4 py-2 rounded-full hover:bg-blue-600 transition-colors uppercase tracking-wider"
