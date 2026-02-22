@@ -98,7 +98,7 @@ export default function CartPage() {
                   </div>
                 </div>
                 <div className="text-slate-900 font-bold text-xl">
-                  ${item.price}
+                  R{item.price}
                 </div>
               </div>
             ))}
@@ -106,7 +106,7 @@ export default function CartPage() {
             <div className="bg-white rounded-3xl border border-gray-100 p-8 mt-8 shadow-sm flex flex-col items-end">
               <div className="flex justify-between w-full md:w-1/2 text-xl mb-8 border-b border-gray-100 pb-4">
                 <span className="font-medium text-slate-500">Subtotal:</span>
-                <span className="font-bold text-slate-900">${totalRevenue}</span>
+                <span className="font-bold text-slate-900">R{totalRevenue}</span>
               </div>
               
               {/* Clicking the button triggers Checkout logic */}

@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/app/context/CartContext";
 
 // Importing of database tools to track popularity
-import { db } from "@/lib/firebase";
+import { db } from "@/app/lib/firebase";
 import { doc, updateDoc, increment } from "firebase/firestore";
 
 export default function ProductCard({ product }) {
@@ -66,7 +66,7 @@ export default function ProductCard({ product }) {
         {/* Price and Button Section */}
         <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100">
           <span className="text-slate-900 font-bold text-lg">
-            ${product.price}
+            R{product.price}
           </span>
           
           <button 
