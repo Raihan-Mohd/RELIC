@@ -1,130 +1,151 @@
 "use client";
 
-// I import our global Contexts so this page can hear what is happening elsewhere
 import { useCart } from "@/app/context/CartContext";
 import { useAuth } from "@/app/context/authContext";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
-
-// Importing the database tools so we can save Receipts
+import Link from "next/link";
 import { db } from "@/app/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
 
 export default function CartPage() {
-  
-  //get the cart items and removeFromCart actions
-  // added clearCart so we can empty it after they buy
-  const { cart, removeFromCart, clearCart } = useCart();
+  const { cartItems, removeFromCart, clearCart } = useCart();
   const { user } = useAuth();
   const router = useRouter();
 
-  // Basic math: Add up the price of everything in the cart (Revenue)
-  const totalRevenue = cart.reduce((sum, item) => sum + item.price, 0);
-  
-  // Add up the cost of everything in the cart (For our Profit calculation)
-  // uses `item.cost || 0` just in case an older product doesn't have a cost saved yet
-  const totalCost = cart.reduce((sum, item) => sum + (item.cost || 0), 0);
-
-  const handleCheckoutClick = async () => {
-    // Kick them out if they aren't logged in
+  const handleCheckout = async () => {
     if (!user) {
-      alert("Authentication required. Redirecting to Login...");
+      alert("Please log in to complete your checkout.");
       router.push("/login");
-      return; // Stop the code right here
+      return;
     }
+    if (cartItems.length === 0) return;
 
     try {
-      // Write the Digital Receipt
-      const receipt = {
+      let totalRevenue = 0;
+      let totalCost = 0;
+
+      const purchasedItems = cartItems.map(item => {
+        totalRevenue += Number(item.price);
+        totalCost += Number(item.cost || 0);
+        return {
+          id: item.id,
+          name: item.name,
+          price: Number(item.price),
+          cost: Number(item.cost || 0)
+        };
+      });
+
+      const orderData = {
         buyerEmail: user.email,
-        date: new Date().toISOString(), // Saves the exact date and time
+        date: new Date().toISOString(),
+        purchasedItems: purchasedItems,
         revenue: totalRevenue,
         cost: totalCost,
-        // makes a simple list of just the IDs and Names of the items they bought
-        purchasedItems: cart.map(item => ({ id: item.id, name: item.name })) 
+        status: "Pending"
       };
 
-      // Pause and send this receipt to a new orders folder in Firebase
-      await addDoc(collection(db, "orders"), receipt);
-
-      //  Successful and Empty the cart completely 
-      clearCart();
+      await addDoc(collection(db, "orders"), orderData);
       
-      //Tell the user it worked
-      alert(`Checkout Complete! Order confirmed for ${user.email}.`);
-
+      alert("Checkout successful! Order placed.");
+      clearCart(); 
+      router.push("/profile"); 
+      
     } catch (error) {
-      console.error("Checkout failed:", error);
-      alert("There was an error processing your transaction.");
+      console.error("Checkout Error:", error);
+      alert("Error during checkout.");
     }
   };
 
+  if (!cartItems || cartItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6">
+        <div className="w-24 h-24 mb-6 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.1)]">
+          <span className="text-4xl">🛒</span>
+        </div>
+        <h1 className="text-2xl font-black text-white mb-2 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">Cart is Empty</h1>
+        <p className="text-slate-400 font-mono text-sm mb-8 uppercase tracking-widest">You haven't added any items yet.</p>
+        <Link href="/shop" className="bg-blue-600/20 text-blue-400 border border-blue-500 hover:bg-blue-600 hover:text-white transition-all px-8 py-4 rounded-sm font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+          Back to Shop
+        </Link>
+      </div>
+    );
+  }
+
+  const totalRevenue = (cartItems || []).reduce((sum, item) => sum + Number(item.price), 0);
+
   return (
-    <div className="min-h-screen bg-slate-50 py-12">
-      <div className="max-w-4xl mx-auto px-6">
-        <h1 className="font-sans text-4xl text-slate-900 mb-8 tracking-widest font-bold border-b border-gray-200 pb-6 uppercase">
+    <div className="min-h-screen bg-slate-950 py-20 px-6">
+      <div className="max-w-6xl mx-auto">
+        
+        <h1 className="font-sans text-4xl text-white font-black tracking-widest mb-12 uppercase drop-shadow-[0_0_10px_rgba(59,130,246,0.3)] border-b border-slate-800 pb-6">
           Your Cart
         </h1>
 
-        {cart.length === 0 ? (
-          <div className="text-center py-24 bg-white rounded-3xl border border-gray-100 shadow-sm">
-            <p className="text-slate-500 mb-8 font-medium text-lg">
-              Your cart is currently empty.
-            </p>
-            <Link href="/shop" className="bg-slate-900 text-white px-8 py-3 rounded-full hover:bg-blue-600 transition-colors uppercase tracking-widest text-sm font-bold shadow-md">
-              Browse Catalog
-            </Link>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {cart.map((item, index) => (
-              <div key={index} className="flex items-center justify-between bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-6">
-                  <div className="relative w-20 h-20 bg-slate-50 rounded-xl overflow-hidden border border-gray-100">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" />
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-slate-900 font-bold text-lg">{item.name}</h3>
-                    <p className="text-sm text-slate-500 font-medium mb-1">
-                      Video Game: {item.stats.source}
-                    </p>
-                    <button 
-                      onClick={() => removeFromCart(index)}
-                      className="text-xs font-bold text-red-500 hover:text-red-700 transition-colors uppercase tracking-widest"
-                    >
-                      Remove
-                    </button>
-                  </div>
+        <div className="flex flex-col lg:flex-row gap-12">
+          
+          <div className="lg:w-2/3 space-y-6">
+            {(cartItems || []).map((item, index) => (
+              <div key={`${item.id}-${index}`} className="flex gap-6 bg-slate-900 border border-slate-800 p-4 rounded-sm shadow-md group hover:border-blue-500/50 transition-colors relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-blue-600/50 group-hover:bg-blue-500 transition-colors"></div>
+                
+                <div className="relative w-24 h-24 bg-slate-950 border border-slate-800 rounded-sm overflow-hidden flex-shrink-0">
+                  <Image src={item.image} alt={item.name} fill className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all" />
                 </div>
-                <div className="text-slate-900 font-bold text-xl">
-                  R{item.price}
+                
+                <div className="flex-grow flex flex-col justify-center">
+                  <h3 className="font-bold text-lg text-white group-hover:text-blue-400 transition-colors drop-shadow-sm">{item.name}</h3>
+                  <p className="text-[10px] text-slate-500 font-mono uppercase tracking-widest mt-1">ID: {item.id}</p>
+                </div>
+
+                <div className="flex flex-col items-end justify-center min-w-[100px] border-l border-slate-800 pl-6">
+                  <p className="font-bold text-blue-400 text-xl drop-shadow-[0_0_8px_rgba(59,130,246,0.4)] mb-2">R{item.price}</p>
+                  <button onClick={() => removeFromCart(item.id)} className="text-[10px] font-bold text-red-500 hover:text-red-400 uppercase tracking-widest transition-colors font-mono hover:drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]">
+                    [ Remove ]
+                  </button>
                 </div>
               </div>
             ))}
+          </div>
 
-            <div className="bg-white rounded-3xl border border-gray-100 p-8 mt-8 shadow-sm flex flex-col items-end">
-              <div className="flex justify-between w-full md:w-1/2 text-xl mb-8 border-b border-gray-100 pb-4">
-                <span className="font-medium text-slate-500">Subtotal:</span>
-                <span className="font-bold text-slate-900">R{totalRevenue}</span>
+          <div className="lg:w-1/3">
+            <div className="bg-slate-900 rounded-sm border border-slate-700 p-8 sticky top-32 shadow-[0_0_30px_rgba(59,130,246,0.1)] relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-transparent"></div>
+              
+              <h2 className="text-xl font-black text-white mb-6 uppercase tracking-widest drop-shadow-sm">Summary</h2>
+              
+              <div className="space-y-4 mb-8 font-mono text-sm text-slate-400">
+                <div className="flex justify-between">
+                  <span>Items:</span>
+                  <span className="text-white">{cartItems.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shipping:</span>
+                  <span className="text-white">R0.00</span>
+                </div>
+                <div className="h-px bg-slate-800 my-4"></div>
+                <div className="flex justify-between items-center text-lg">
+                  <span className="font-sans font-bold text-white uppercase tracking-widest">Total:</span>
+                  <span className="font-bold text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)] text-2xl">R{totalRevenue}</span>
+                </div>
               </div>
-              
-              {/* Clicking the button triggers Checkout logic */}
-              <button 
-                onClick={handleCheckoutClick}
-                className="bg-slate-900 text-white px-10 py-4 rounded-full font-bold tracking-widest hover:bg-blue-600 transition-colors w-full md:w-auto shadow-lg uppercase"
-              >
-                Proceed to Checkout
-              </button>
-              
-              {!user && (
-                <p className="text-sm text-red-500 font-medium mt-4 text-right">
-                  * Authentication required to complete purchase.
-                </p>
+
+              {!user ? (
+                <div className="text-center">
+                  <p className="text-xs text-red-400 font-mono mb-4 uppercase tracking-widest">Authentication Required</p>
+                  <Link href="/login" className="block w-full text-center bg-slate-800 text-white py-4 rounded-sm font-bold uppercase tracking-widest border border-slate-700 hover:bg-slate-700 transition-colors">
+                    Login to Continue
+                  </Link>
+                </div>
+              ) : (
+                <button onClick={handleCheckout} className="w-full bg-blue-600/20 border border-blue-500 text-white py-4 rounded-sm font-bold uppercase tracking-widest hover:bg-blue-600 hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] transition-all">
+                  Checkout
+                </button>
               )}
             </div>
           </div>
-        )}
+        </div>
+
       </div>
     </div>
   );

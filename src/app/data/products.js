@@ -7,7 +7,8 @@ export const products = [
     price: 450,
     cost: 180,
     category: "Decor & Collectibles",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Warrior+Jar",
+    tags: ["elden ring", "mug", "ceramic", "jar", "warrior"],
+    image: "/images/Vessel of the Warrior.png",
     stats: { rarity: "Rare", source: "Elden Ring", type: "Ceramic" },
     lore: "A ceramic shard from a warrior jar. Contains the spirit of adventure... and perhaps some innards."
   },
@@ -18,7 +19,8 @@ export const products = [
     price: 550,
     cost: 220,
     category: "Decor & Collectibles",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Wolf+Medallion",
+    tags: ["witcher", "wolf", "medallion", "metal", "silver"],
+    image: "/images/Medallion of the White Wolf.png",
     stats: { rarity: "Uncommon", source: "The Witcher 3", type: "Wall Decor" },
     lore: "It vibrates near places of power. A symbol of the monster hunter."
   },
@@ -29,7 +31,8 @@ export const products = [
     price: 1200,
     cost: 500,
     category: "Decor & Collectibles",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Ghost+Mask",
+    tags: ["ghost", "tsushima", "mask", "samurai", "replica"],
+    image: "/images/Visage of the Ghost.png",
     stats: { rarity: "Epic", source: "Ghost of Tsushima", type: "Replica" },
     lore: "The face of vengeance. It strikes fear into the hearts of invaders."
   },
@@ -40,7 +43,8 @@ export const products = [
     price: 250,
     cost: 90,
     category: "Decor & Collectibles",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Fox+Statue",
+    tags: ["fox", "statue", "tsushima", "shrine", "resin"],
+    image: "/images/Messenger of the Shrine.png",
     stats: { rarity: "Common", source: "Ghost of Tsushima", type: "Statue" },
     lore: "Follow this creature; it knows the hidden paths to power."
   },
@@ -51,7 +55,8 @@ export const products = [
     price: 890,
     cost: 400,
     category: "Decor & Collectibles",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Symbiote+Vial",
+    tags: ["spiderman", "venom", "symbiote", "science", "magnetic"],
+    image: "/images/Symbiote Containment Vial.png",
     stats: { rarity: "Epic", source: "Spider-Man", type: "Science" },
     lore: "A sample of the alien black suit. It moves when it senses magnetism. Do not break the glass."
   },
@@ -62,7 +67,8 @@ export const products = [
     price: 950,
     cost: 450,
     category: "Decor & Collectibles",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Infernal+Engine",
+    tags: ["baldurs gate", "karlach", "engine", "steampunk", "fan"],
+    image: "/images/Infernal Engine Core.png",
     stats: { rarity: "Rare", source: "Baldur's Gate 3", type: "Functional" },
     lore: "It burns with the fires of hell. A heavy iron fan that cools your room while looking hot."
   },
@@ -75,7 +81,8 @@ export const products = [
     price: 750,
     cost: 300,
     category: "Lighting",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Site+of+Grace",
+    tags: ["elden ring", "lamp", "grace", "light", "gold"],
+    image: "/images/Beacon of Lost Grace.png",
     stats: { rarity: "Legendary", source: "Elden Ring", type: "Lamp" },
     lore: "A faint golden light that guides the Tarnished. It hums with a quiet, sad song."
   },
@@ -86,7 +93,8 @@ export const products = [
     price: 650,
     cost: 250,
     category: "Lighting",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Mind+Specimen",
+    tags: ["baldurs gate", "mind flayer", "lamp", "jar", "creepy"],
+    image: "/images/Specimen of the Mind.png",
     stats: { rarity: "Rare", source: "Baldur's Gate 3", type: "Lamp" },
     lore: "Preserved in brine and bioluminescent fluid. Do not let it near your eye."
   },
@@ -97,7 +105,8 @@ export const products = [
     price: 180,
     cost: 60,
     category: "Lighting",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Yennefer+Candle",
+    tags: ["witcher", "yennefer", "candle", "scent", "purple"],
+    image: "/images/Sorceress's Scent.png",
     stats: { rarity: "Common", source: "The Witcher 3", type: "Candle" },
     lore: "The signature scent of a powerful mage. Smells of storms, lilac, and gooseberries."
   },
@@ -108,7 +117,8 @@ export const products = [
     price: 350,
     cost: 120,
     category: "Lighting",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Pixel+Torch",
+    tags: ["minecraft", "torch", "led", "pixel", "wall"],
+    image: "/images/Torch of the Deep Miner.png",
     stats: { rarity: "Common", source: "Minecraft", type: "Wall Light" },
     lore: "A blocky torch that burns eternally. Essential for preventing monster spawns in your room."
   },
@@ -119,7 +129,8 @@ export const products = [
     price: 850,
     cost: 350,
     category: "Lighting",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Bonfire+Lamp",
+    tags: ["dark souls", "bonfire", "sword", "lamp", "fire"],
+    image: "/images/Coiled Sword Hearth.png",
     stats: { rarity: "Rare", source: "Dark Souls", type: "Lamp" },
     lore: "If you are reading this, you are safe. Rest here a while."
   },
@@ -130,7 +141,8 @@ export const products = [
     price: 900,
     cost: 400,
     category: "Lighting",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Prowler+Neon",
+    tags: ["spiderman", "miles morales", "neon", "purple", "prowler"],
+    image: "/images/Mask of the Prowler.png",
     stats: { rarity: "Rare", source: "Miles Morales", type: "Neon" },
     lore: "A glowing sigil of the watcher in the shadows. Wall-mounted purple neon light."
   },
@@ -143,7 +155,8 @@ export const products = [
     price: 320,
     cost: 110,
     category: "Desk & Office",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Moonlight+Opener",
+    tags: ["elden ring", "sword", "letter opener", "blue", "moonlight"],
+    image: "/images/Moonlight Cutter.png",
     stats: { rarity: "Legendary", source: "Elden Ring", type: "Stationery" },
     lore: "A chilly blade bestowed by a Lunar Princess. Perfect for severing sealed missives."
   },
@@ -154,7 +167,8 @@ export const products = [
     price: 400,
     cost: 150,
     category: "Desk & Office",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Rune+Deskmat",
+    tags: ["elden ring", "desk mat", "mousepad", "gold", "runes"],
+    image: "/images/Golden Order Totem.png",
     stats: { rarity: "Common", source: "Elden Ring", type: "Desk Mat" },
     lore: "The metaphysical laws of the world, woven into a fabric surface to protect your desk."
   },
@@ -165,7 +179,8 @@ export const products = [
     price: 250,
     cost: 80,
     category: "Desk & Office",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Ender+Pearl",
+    tags: ["minecraft", "ender pearl", "glass", "paperweight", "green"],
+    image: "/images/Pearl of the Void.png",
     stats: { rarity: "Rare", source: "Minecraft", type: "Glass" },
     lore: "Gaze into its depths to teleport across the veil. Heavy glass paperweight. May cause nausea."
   },
@@ -176,7 +191,8 @@ export const products = [
     price: 550,
     cost: 200,
     category: "Desk & Office",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Wukong+Pen",
+    tags: ["wukong", "staff", "pen", "metal", "extendable"],
+    image: "/images/Staff of the Monkey King.png",
     stats: { rarity: "Legendary", source: "Black Myth: Wukong", type: "Pen" },
     lore: "Weighs 13,500 catties, yet fits in your pocket. A heavy brass pen that obeys only the Destined One."
   },
@@ -189,7 +205,8 @@ export const products = [
     price: 600,
     cost: 240,
     category: "Storage & Containers",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=D20+Artifact",
+    tags: ["baldurs gate", "artifact", "d20", "box", "puzzle"],
+    image: "/images/Prism of the Astral Guard.png",
     stats: { rarity: "Epic", source: "Baldur's Gate 3", type: "Box" },
     lore: "A complex geometric prison. You feel a presence watching you from within. Good for dice."
   },
@@ -200,7 +217,8 @@ export const products = [
     price: 300,
     cost: 100,
     category: "Storage & Containers",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Staminan+X",
+    tags: ["yakuza", "staminan", "bottle", "drink", "energy"],
+    image: "/images/Draft of Vitality.png",
     stats: { rarity: "Common", source: "Yakuza", type: "Bottle" },
     lore: "A potent energy draft found in the back alleys. Restores heat. Double-walled aluminum."
   },
@@ -211,7 +229,8 @@ export const products = [
     price: 350,
     cost: 130,
     category: "Storage & Containers",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Web+Fluid",
+    tags: ["spiderman", "web", "mug", "travel", "silver"],
+    image: "/images/Alchemist's Web Canister.png",
     stats: { rarity: "Uncommon", source: "Spider-Man", type: "Mug" },
     lore: "Contains the formula for binding one's foes. Sticky to the touch. Keeps coffee hot for 6 hours."
   },
@@ -222,7 +241,8 @@ export const products = [
     price: 450,
     cost: 160,
     category: "Storage & Containers",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Wukong+Gourd",
+    tags: ["wukong", "gourd", "flask", "drink", "wood"],
+    image: "/images/Gourd of the Immortal.png",
     stats: { rarity: "Rare", source: "Black Myth: Wukong", type: "Flask" },
     lore: "Takes in spirits, pours out health. The older the wine, the stronger the magic."
   },
@@ -233,7 +253,8 @@ export const products = [
     price: 400,
     cost: 140,
     category: "Storage & Containers",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Estus+Flask",
+    tags: ["dark souls", "estus", "flask", "glass", "green"],
+    image: "/images/Flask of Undead Vitality.png",
     stats: { rarity: "Common", source: "Dark Souls", type: "Bottle" },
     lore: "An emerald flask. Drink to restore your fading humanity. Hand-blown glass."
   },
@@ -246,7 +267,8 @@ export const products = [
     price: 250,
     cost: 70,
     category: "Accessories & Gadgets",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Gwent+Deck",
+    tags: ["witcher", "gwent", "cards", "game", "deck"],
+    image: "/images/Deck of the Bard.png",
     stats: { rarity: "Common", source: "The Witcher 3", type: "Game" },
     lore: "A collection of heroes and monsters. Care for a round of Gwent?"
   },
@@ -257,7 +279,8 @@ export const products = [
     price: 300,
     cost: 90,
     category: "Accessories & Gadgets",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Relic+Biochip",
+    tags: ["cyberpunk", "relic", "usb", "tech", "chip"],
+    image: "/images/The Immortal's Shard.png",
     stats: { rarity: "Legendary", source: "Cyberpunk 2077", type: "USB" },
     lore: "A forbidden biochip containing the soul of a rockerboy. Insert into USB port at your own risk."
   },
@@ -268,7 +291,8 @@ export const products = [
     price: 550,
     cost: 210,
     category: "Accessories & Gadgets",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Neon+Umbrella",
+    tags: ["cyberpunk", "katana", "umbrella", "neon", "rain"],
+    image: "/images/Neon Katana Hilt.png",
     stats: { rarity: "Epic", source: "Cyberpunk 2077", type: "Umbrella" },
     lore: "A blade of pure light, repurposed to shield one from the acid rain. Fully collapsible."
   },
@@ -279,7 +303,8 @@ export const products = [
     price: 150,
     cost: 40,
     category: "Accessories & Gadgets",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Eyepatch",
+    tags: ["yakuza", "majima", "eyepatch", "leather", "cosplay"],
+    image: "/images/Sigil of the Mad Dog.png",
     stats: { rarity: "Rare", source: "Yakuza", type: "Cosplay" },
     lore: "Worn by the unpredictable demon of the East. Genuine snakeskin texture."
   },
@@ -290,7 +315,8 @@ export const products = [
     price: 120,
     cost: 30,
     category: "Accessories & Gadgets",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Saw+Badge",
+    tags: ["bloodborne", "saw", "keychain", "metal", "hunter"],
+    image: "/images/Hunter's Saw Badge.png",
     stats: { rarity: "Common", source: "Bloodborne", type: "Keychain" },
     lore: "A badge of the workshop. For those who hunt the beasts. Attaches to your keys."
   },
@@ -301,7 +327,8 @@ export const products = [
     price: 850,
     cost: 300,
     category: "Accessories & Gadgets",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Wolf+Ring",
+    tags: ["dark souls", "ring", "silver", "artorias", "jewelry"],
+    image: "/images/Ring of the Wolf Knight.png",
     stats: { rarity: "Epic", source: "Dark Souls", type: "Jewelry" },
     lore: "Allows one to traverse the abyss without being consumed. Sterling silver plating."
   },
@@ -312,8 +339,35 @@ export const products = [
     price: 600,
     cost: 250,
     category: "Accessories & Gadgets",
-    image: "https://placehold.co/600x600/1a1a1a/c5a059?text=Venom+Power",
+    tags: ["spiderman", "miles morales", "battery", "power bank", "tech"],
+    image: "/images/Venom Strike Battery.png",
     stats: { rarity: "Rare", source: "Miles Morales", type: "Tech" },
     lore: "Stores the bio-electric charge of a young hero. 10,000mAh capacity for your devices."
+  },
+  
+  // NEW MINECRAFT ITEMS
+  {
+    id: "rel-029",
+    name: "Diamond Cutter",
+    description: "Life-size Foam Diamond Sword Replica.",
+    price: 800,
+    cost: 300,
+    category: "Decor & Collectibles",
+    tags: ["minecraft", "sword", "diamond", "blue", "weapon", "foam"],
+    image: "/images/Diamond Cutter.png",
+    stats: { rarity: "Epic", source: "Minecraft", type: "Replica" },
+    lore: "The ultimate tool of defense. Forged deep underground from the strongest materials known to crafters."
+  },
+  {
+    id: "rel-030",
+    name: "Miner's Iron Companion",
+    description: "Heavy-duty Iron Pickaxe Display Piece.",
+    price: 600,
+    cost: 250,
+    category: "Decor & Collectibles",
+    tags: ["minecraft", "pickaxe", "iron", "tool", "mining"],
+    image: "/images/Miner's Iron Companion.png",
+    stats: { rarity: "Common", source: "Minecraft", type: "Tool" },
+    lore: "Essential for digging past the stone. Just don't try using it on obsidian."
   }
 ];

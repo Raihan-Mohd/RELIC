@@ -18,8 +18,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      {/* Changed the background to white/slate and removed the dark mode colors */}
-      <body className={`${inter.variable} ${cinzel.variable} antialiased bg-slate-50 text-slate-900`}>
+      {/* Dark background, smooth scrolling, and light text by default */}
+      <body className={`${inter.className} bg-slate-950 text-slate-200 antialiased selection:bg-blue-500/30 selection:text-blue-200`}>
         <AuthProvider>
         <CartProvider>
             <Navbar />

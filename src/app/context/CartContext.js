@@ -2,88 +2,97 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "@/app/context/authContext";
-
-// database tools needed to talk to the cloud
 import { db } from "@/app/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-const CartContext = createContext();
+const CartContext = createContext({});
 
-export function CartProvider({ children }) {
-  // The display shelf for the cart
-  const [cart, setCart] = useState([]);
+export const CartProvider = ({ children }) => {
+  const { user } = useAuth();
+  const [cartItems, setCartItems] = useState([]);
   
-  // Listen to to know exactly who is logged in
-  const { user } = useAuth(); 
+  // A safety lock to prevent the cart from overwriting itself when the page first loads
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // This function runs every time someone logs in or logs out
+  // loads the cart(When the app opens or user logs in)
   useEffect(() => {
-    const fetchCloudCart = async () => {
-      // If a user is logged in, go get their specific cloud cart
+    const loadCart = async () => {
       if (user) {
+        // If logged in, grab their saved cart from Firebase
         try {
-          // Request to find this specific user's cart document
           const cartRef = doc(db, "carts", user.uid);
-          // Pause and fetch the document from Firebase
-          const cartSnap = await getDoc(cartRef);
-
-          // if the document exists in the database, put those items on the shelf
-          if (cartSnap.exists()) {
-            setCart(cartSnap.data().items);
+          const snap = await getDoc(cartRef);
+          if (snap.exists()) {
+            setCartItems(snap.data().items || []);
           } else {
-            // ELSE, they are a brand new user, Give them an empty shelf
-            setCart([]);
+            // If they are a new user, check if they added stuff as a guest first, and keep it
+            const localCart = JSON.parse(localStorage.getItem("relic_cart")) || [];
+            setCartItems(localCart);
           }
         } catch (error) {
-          console.error("Failed to fetch cloud cart:", error);
+          console.error("Error loading cloud cart:", error);
         }
       } else {
-        // IF they log out (!user), immediately empty the shelf so the next person can't see it
-        setCart([]);
+        // If they are a guest, just load from the browser's local storage
+        const localCart = JSON.parse(localStorage.getItem("relic_cart")) || [];
+        setCartItems(localCart);
+      }
+      setIsInitialized(true); // Unlock the save function
+    };
+    
+    loadCart();
+  }, [user]);
+
+  // Save the cart (Anytime items are added or removed)
+  useEffect(() => {
+    // If the app just opened, don't accidentally save an empty array over their real cart
+    if (!isInitialized) return; 
+
+    // Always save a backup to the browser's local storage
+    localStorage.setItem("relic_cart", JSON.stringify(cartItems));
+
+    // If they are logged in, sync it to Firebase instantly
+    const saveToCloud = async () => {
+      if (user) {
+        try {
+          await setDoc(doc(db, "carts", user.uid), { items: cartItems });
+        } catch (error) {
+          console.error("Error saving cloud cart:", error);
+        }
       }
     };
+    saveToCloud();
+  }, [cartItems, user, isInitialized]);
 
-    fetchCloudCart();
-  }, [user]); // Run this exactly when the 'user' changes
-
-
-  // helper function: Whenever the cart changes, we back it up to Firebase.
-  const syncCartToCloud = async (updatedCart) => {
-    if (user) {
-      try {
-        const cartRef = doc(db, "carts", user.uid);
-        // Save the exact list of items to their specific cloud document
-        await setDoc(cartRef, { items: updatedCart });
-      } catch (error) {
-        console.error("Failed to sync cart to cloud:", error);
-      }
-    }
-  };
-
+  // cart actions
   const addToCart = (product) => {
-    const newCart = [...cart, product];
-    setCart(newCart);      // Update the screen immediately
-    syncCartToCloud(newCart); // Send the backup to Firebase silently in the background
+    // adds the new product to the end of the existing list
+    setCartItems((prev) => [...prev, product]);
   };
 
-  const removeFromCart = (indexToRemove) => {
-    const newCart = cart.filter((_, index) => index !== indexToRemove);
-    setCart(newCart);      // Update the screen immediately
-    syncCartToCloud(newCart); // Send the backup to Firebase
+  const removeFromCart = (productId) => {
+    // filters out the item they want to remove. 
+    // (Note: To remove just one instance of an item if they have duplicates, we find the first index).
+    setCartItems((prev) => {
+      const index = prev.findIndex(item => item.id === productId);
+      if (index === -1) return prev;
+      const newCart = [...prev];
+      newCart.splice(index, 1);
+      return newCart;
+    });
   };
 
   const clearCart = () => {
-    setCart([]);
-    syncCartToCloud([]); // Send an empty list to Firebase
+    setCartItems([]);
   };
 
+  const cartCount = cartItems.length;
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart, cartCount }}>
       {children}
     </CartContext.Provider>
   );
-}
+};
 
-export function useCart() {
-  return useContext(CartContext);
-}
+export const useCart = () => useContext(CartContext);

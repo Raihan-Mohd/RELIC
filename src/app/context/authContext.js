@@ -1,44 +1,47 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
-import { auth } from "@/app/lib/firebase";
-import { 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut 
-} from "firebase/auth";
+import { createContext, useContext, useEffect, useState } from "react";
+import { auth, googleProvider } from "@/app/lib/firebase";
+import { onAuthStateChanged, signOut, signInWithPopup } from "firebase/auth";
 
-// Create the Context (The Brain/backback)
-const AuthContext = createContext();
+const AuthContext = createContext({});
 
-export function AuthProvider({ children }) {
-  // Set up the State. It starts as null (Guest)
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Listen for changes. Firebase checks if im already logged in
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser); // If logged in, this sets the user data. If logged out, it sets it to null.
+      setUser(currentUser);
       setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
-  // The Actions (Login, Signup, Logout)
-  const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
-  const signup = (email, password) => createUserWithEmailAndPassword(auth, email, password);
-  const logout = () => signOut(auth);
+//Google login
+  const loginWithGoogle = async () => {
+    try {
+      // This single line opens the secure Google popup window
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+    }
+  };
 
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
+  };
+
+  // exposes the new loginWithGoogle function to the rest of the app
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ user, loading, loginWithGoogle, logout }}>
+      {children}
     </AuthContext.Provider>
   );
-}
+};
 
-// shortcut function
-export function useAuth() {
-  return useContext(AuthContext);
-}
+export const useAuth = () => useContext(AuthContext);
