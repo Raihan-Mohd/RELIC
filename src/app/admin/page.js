@@ -17,8 +17,9 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [editingId, setEditingId] = useState(null);
 
+  // Added image to the initial state
   const [newProduct, setNewProduct] = useState({
-    name: "", price: "", cost: "", videoGame: "", rarity: "Common", description: "", tags: ""
+    name: "", price: "", cost: "", videoGame: "", rarity: "Common", description: "", tags: "", image: ""
   });
 
   const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS ? process.env.NEXT_PUBLIC_ADMIN_EMAILS.split(",") : [];
@@ -51,8 +52,13 @@ export default function AdminDashboard() {
     try {
       const tagsArray = newProduct.tags ? newProduct.tags.split(',').map(tag => tag.trim().toLowerCase()) : [];
       const productData = {
-        name: newProduct.name, price: Number(newProduct.price), cost: Number(newProduct.cost), 
-        lore: newProduct.description, image: "https://via.placeholder.com/400", tags: tagsArray,
+        name: newProduct.name, 
+        price: Number(newProduct.price), 
+        cost: Number(newProduct.cost), 
+        lore: newProduct.description, 
+        // Uses the uploaded image, or falls back to a placeholder
+        image: newProduct.image || "https://via.placeholder.com/400", 
+        tags: tagsArray,
         stats: { source: newProduct.videoGame, rarity: newProduct.rarity, cartAdds: editingId ? undefined : 0, sales: editingId ? undefined : 0 }
       };
 
@@ -72,7 +78,8 @@ export default function AdminDashboard() {
         await setDoc(doc(db, "products", newId), productData);
       }
       
-      setNewProduct({ name: "", price: "", cost: "", videoGame: "", rarity: "Common", description: "", tags: "" });
+      // Reset form
+      setNewProduct({ name: "", price: "", cost: "", videoGame: "", rarity: "Common", description: "", tags: "", image: "" });
       setEditingId(null);
       fetchAllData(); 
     } catch (error) { console.error("Error saving product:", error); }
@@ -83,7 +90,8 @@ export default function AdminDashboard() {
     setNewProduct({
       name: product.name, price: product.price, cost: product.cost || "",
       videoGame: product.stats?.source || "", rarity: product.stats?.rarity || "Common",
-      description: product.lore || "", tags: product.tags ? product.tags.join(", ") : ""
+      description: product.lore || "", tags: product.tags ? product.tags.join(", ") : "",
+      image: product.image || "" // Load existing image into form
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -94,7 +102,7 @@ export default function AdminDashboard() {
         await deleteDoc(doc(db, "products", id));
         if (editingId === id) {
           setEditingId(null);
-          setNewProduct({ name: "", price: "", cost: "", videoGame: "", rarity: "Common", description: "", tags: "" });
+          setNewProduct({ name: "", price: "", cost: "", videoGame: "", rarity: "Common", description: "", tags: "", image: "" });
         }
         fetchAllData(); 
       } catch (error) { console.error("Error deleting product:", error); }
@@ -234,12 +242,36 @@ export default function AdminDashboard() {
                     </select>
                     <textarea placeholder="Product Description" required rows="3" value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} className="bg-slate-950 border border-slate-800 text-white placeholder-slate-600 p-3 rounded-sm focus:outline-none focus:border-blue-500 text-xs resize-none"></textarea>
                     
+                    {/* Image Upload Section */}
+                    <div className="bg-slate-950 border border-slate-800 p-3 rounded-sm">
+                      <label className="text-xs text-slate-500 block mb-2 uppercase tracking-widest font-bold">Upload Image (PNG/JPG):</label>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            // Convert image to Base64 string so it can be saved in the database
+                            reader.onloadend = () => setNewProduct({...newProduct, image: reader.result});
+                            reader.readAsDataURL(file);
+                          }
+                        }} 
+                        className="text-[10px] text-white file:bg-slate-800 file:border-0 file:text-blue-400 file:px-3 file:py-1 file:rounded-sm hover:file:bg-slate-700 cursor-pointer w-full"
+                      />
+                      {newProduct.image && (
+                        <div className="mt-3">
+                          <img src={newProduct.image} alt="Preview" className="h-20 w-20 object-cover rounded-sm border border-slate-700" />
+                        </div>
+                      )}
+                    </div>
+
                     <button type="submit" className={`mt-2 text-white py-3 rounded-sm transition-all font-bold tracking-widest uppercase text-xs ${editingId ? 'bg-yellow-600/20 border border-yellow-500 hover:bg-yellow-600 hover:shadow-[0_0_15px_rgba(234,179,8,0.5)]' : 'bg-blue-600/20 border border-blue-500 hover:bg-blue-600 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'}`}>
                       {editingId ? "Update Product" : "Save to Database"}
                     </button>
 
                     {editingId && (
-                      <button type="button" onClick={() => { setEditingId(null); setNewProduct({ name: "", price: "", cost: "", videoGame: "", rarity: "Common", description: "", tags: "" }); }} className="bg-transparent border border-slate-600 text-slate-400 py-3 rounded-sm hover:border-slate-400 hover:text-white transition-all font-bold tracking-widest uppercase text-xs">
+                      <button type="button" onClick={() => { setEditingId(null); setNewProduct({ name: "", price: "", cost: "", videoGame: "", rarity: "Common", description: "", tags: "", image: "" }); }} className="bg-transparent border border-slate-600 text-slate-400 py-3 rounded-sm hover:border-slate-400 hover:text-white transition-all font-bold tracking-widest uppercase text-xs">
                         Cancel Edit
                       </button>
                     )}
@@ -255,16 +287,15 @@ export default function AdminDashboard() {
                     {products.map((item) => (
                       <div key={item.id} className="flex justify-between items-center border border-slate-800 p-4 rounded-sm hover:border-blue-500/50 transition-colors bg-slate-950 group relative">
                         <div className="absolute left-0 top-0 w-1 h-full bg-slate-800 group-hover:bg-blue-500 transition-colors"></div>
-                        <div className="pl-2">
-                          <h4 className="font-bold text-white font-sans">{item.name} <span className="text-[9px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-sm text-slate-400 ml-2 font-mono uppercase tracking-widest">{item.id}</span></h4>
-                          <p className="text-[10px] text-slate-500 font-mono uppercase tracking-widest mt-1">Price: R{item.price} // Cost: R{item.cost || 0}</p>
-                          {item.tags && item.tags.length > 0 && (
-                            <div className="flex gap-1 mt-2">
-                              {item.tags.map(tag => (
-                                <span key={tag} className="text-[9px] bg-blue-900/20 border border-blue-800/50 text-blue-400 px-2 py-0.5 rounded-sm uppercase tracking-widest font-bold font-mono">{tag}</span>
-                              ))}
-                            </div>
-                          )}
+                        <div className="pl-2 flex gap-4 items-center">
+                          {/* Display the image thumbnail in the inventory list */}
+                          <div className="w-12 h-12 bg-slate-900 border border-slate-800 rounded-sm overflow-hidden flex-shrink-0 relative">
+                            <img src={item.image} alt={item.name} className="object-cover w-full h-full opacity-80" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-white font-sans">{item.name} <span className="text-[9px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-sm text-slate-400 ml-2 font-mono uppercase tracking-widest">{item.id}</span></h4>
+                            <p className="text-[10px] text-slate-500 font-mono uppercase tracking-widest mt-1">Price: R{item.price} // Cost: R{item.cost || 0}</p>
+                          </div>
                         </div>
                         <div className="flex flex-col gap-2 font-mono">
                           <button onClick={() => handleEditClick(item)} className="text-[10px] font-bold text-yellow-500 hover:text-white border border-yellow-500/50 hover:bg-yellow-600 px-4 py-1.5 rounded-sm transition-all uppercase tracking-widest shadow-[0_0_10px_rgba(234,179,8,0)] hover:shadow-[0_0_10px_rgba(234,179,8,0.5)]">Edit</button>
