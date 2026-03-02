@@ -2,7 +2,13 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, googleProvider } from "@/app/lib/firebase";
-import { onAuthStateChanged, signOut, signInWithPopup } from "firebase/auth";
+import { 
+  onAuthStateChanged, 
+  signOut, 
+  signInWithPopup, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword 
+} from "firebase/auth";
 
 const AuthContext = createContext({});
 
@@ -18,14 +24,28 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-//Google login
+  // Google login
   const loginWithGoogle = async () => {
     try {
       // This single line opens the secure Google popup window
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error("Google Sign-In Error:", error);
+      if (error.code === 'auth/popup-closed-by-user') {
+        console.log("Login cancelled by user.");
+      } else {
+        console.error("Google Sign-In Error:", error);
+      }
     }
+  };
+
+  // Standard Email Signup
+  const registerWithEmail = async (email, password) => {
+    return await createUserWithEmailAndPassword(auth, email, password);
+  };
+
+  // Standard Email Login
+  const loginWithEmail = async (email, password) => {
+    return await signInWithEmailAndPassword(auth, email, password);
   };
 
   const logout = async () => {
@@ -36,9 +56,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // exposes the new loginWithGoogle function to the rest of the app
+  // exposes the new login functions to the rest of the app
   return (
-    <AuthContext.Provider value={{ user, loading, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      loginWithGoogle, 
+      registerWithEmail, 
+      loginWithEmail, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );
